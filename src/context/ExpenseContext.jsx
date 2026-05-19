@@ -4,7 +4,7 @@ import { createContext, useContext, useReducer, useEffect, useState } from 'reac
 // const API_URL = 'http://127.0.0.1:8000/api';
 // e.g: const API_URL = 'https://api.yoursite.com/api';
 
-const API_URL = 'http://et.rimlobd.com/api';
+const API_URL = 'https://et.rimlobd.com/api';
 
 function expenseReducer(state, action) {
   switch (action.type) {
