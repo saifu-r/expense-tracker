@@ -10,7 +10,7 @@ const tabs = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 pb-safe" style={{ maxWidth: 480, margin: '0 auto' }}>
+    <nav className="fixed bottom-0 left-0 right-0 z-50 pb-safe" style={{ maxWidth: 480, margin: '0 auto', paddingBottom: '75px'}}>
       <div className="bg-[#18181f] border-t border-white/5 flex items-center justify-around px-2 pt-2 pb-4">
         {tabs.map(({ to, icon: Icon, label, special }) =>
           special ? (
