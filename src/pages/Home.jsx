@@ -43,7 +43,7 @@ export default function Home() {
       {/* Header */}
       <div className="pt-3 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-sm">{getGreeting()} 👋</p>
+          <p className="text-gray-400 text-sm">{getGreeting()}</p>
           <h1 className="text-2xl font-display font-bold text-white">{firstName}'s Finances</h1>
         </div>
         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center font-display font-bold text-white shadow-lg shadow-violet-500/30">
