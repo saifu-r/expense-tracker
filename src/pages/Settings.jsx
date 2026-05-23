@@ -44,6 +44,7 @@ export default function Settings() {
     setSaving(true);
     // Update locally for now — wire to API when you add profile update endpoint
     localStorage.setItem('user-profile-name', form.name);
+    // localStorage.setItem('auth_user',  JSON.stringify(userData));
     await new Promise(r => setTimeout(r, 500));
     showToast('Profile updated!');
     setSaving(false);
