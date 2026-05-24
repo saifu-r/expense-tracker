@@ -23,6 +23,8 @@ export default function AddTransaction() {
 
   const cats = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
 
+  const [receipt, setReceipt] = useState(null);
+
   function handleChange(e) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   }
@@ -39,7 +41,23 @@ export default function AddTransaction() {
     if (navigator.vibrate) navigator.vibrate(40);
     setLoading(true);
     try {
-      await addTransaction({ ...form, type, amount: Number(form.amount) });
+      // 1. Save transaction first
+      const saved = await addTransaction({ ...form, type, amount: Number(form.amount) });
+
+      // 2. If receipt selected, upload it
+      if (receipt && saved?.id) {
+        const formData = new FormData();
+        formData.append('receipt', receipt);
+        await fetch(`${API_URL}/transactions/${saved.id}/receipts`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+            'Accept': 'application/json',
+          },
+          body: formData, // Note: NO Content-Type header for FormData
+        });
+      }
+
       showToast('Transaction saved!');
       navigate('/');
     } catch {
@@ -56,13 +74,12 @@ export default function AddTransaction() {
       <div className="flex gap-2 bg-[#18181f] p-1 rounded-2xl">
         {['expense', 'income'].map(t => (
           <button key={t} onClick={() => handleTypeChange(t)}
-            className={`flex-1 py-2.5 rounded-xl font-medium text-sm capitalize transition-all ${
-              type === t
-                ? t === 'expense'
-                  ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
-                  : 'bg-green-500 text-white shadow-lg shadow-green-500/20'
-                : 'text-gray-400'
-            }`}>
+            className={`flex-1 py-2.5 rounded-xl font-medium text-sm capitalize transition-all ${type === t
+              ? t === 'expense'
+                ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
+                : 'bg-green-500 text-white shadow-lg shadow-green-500/20'
+              : 'text-gray-400'
+              }`}>
             {t === 'expense' ? '↓ Expense' : '↑ Income'}
           </button>
         ))}
@@ -90,11 +107,10 @@ export default function AddTransaction() {
               const cat = CATEGORIES[key];
               return (
                 <button key={key} onClick={() => setForm(p => ({ ...p, category: key }))}
-                  className={`flex flex-col items-center gap-1 py-3 px-2 rounded-2xl border transition-all text-xs ${
-                    form.category === key
-                      ? 'border-violet-500 bg-violet-500/10 text-violet-300'
-                      : 'border-white/5 bg-[#18181f] text-gray-400'
-                  }`}>
+                  className={`flex flex-col items-center gap-1 py-3 px-2 rounded-2xl border transition-all text-xs ${form.category === key
+                    ? 'border-violet-500 bg-violet-500/10 text-violet-300'
+                    : 'border-white/5 bg-[#18181f] text-gray-400'
+                    }`}>
                   <span className="text-xl">{cat.icon}</span>
                   <span className="truncate w-full text-center">{cat.label.split(' ')[0]}</span>
                 </button>
@@ -115,6 +131,32 @@ export default function AddTransaction() {
             placeholder="Add a note..."
             className="w-full bg-[#18181f] border border-white/5 rounded-2xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-violet-500 transition-colors" />
         </div>
+
+        <div>
+          <label className="text-xs text-gray-400 mb-1.5 block">
+            Receipt / Proof (optional)
+          </label>
+          <label className="w-full flex flex-col items-center gap-2 py-4 rounded-2xl border border-dashed border-white/10 bg-[#18181f] cursor-pointer active:scale-95 transition-transform">
+            <input type="file" accept="image/*,application/pdf"
+              className="hidden"
+              onChange={e => setReceipt(e.target.files[0])} />
+            {receipt ? (
+              <div className="flex items-center gap-2 text-violet-400">
+                <span className="text-xl">📎</span>
+                <span className="text-sm font-medium truncate max-w-[200px]">{receipt.name}</span>
+                <button onClick={e => { e.preventDefault(); setReceipt(null); }}
+                  className="text-gray-500 hover:text-red-400 text-xs">✕</button>
+              </div>
+            ) : (
+              <>
+                <span className="text-2xl">📷</span>
+                <span className="text-sm text-gray-500">Tap to attach receipt</span>
+                <span className="text-xs text-gray-600">JPG, PNG or PDF • Max 5MB</span>
+              </>
+            )}
+          </label>
+        </div>
+
       </div>
 
       {error && (

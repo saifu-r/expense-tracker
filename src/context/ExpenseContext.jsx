@@ -153,3 +153,14 @@ export function ExpenseProvider({ children }) {
 export function useExpenses() {
   return useContext(ExpenseContext);
 }
+
+async function addTransaction(data) {
+  const payload = { ...data, id: crypto.randomUUID() };
+  const res = await fetch(`${API_URL}/transactions`, {
+    method: 'POST', headers: authHeaders(), body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('Failed to save');
+  const saved = await res.json();
+  dispatch({ type: 'ADD', payload: saved });
+  return saved; // ← add this return
+}

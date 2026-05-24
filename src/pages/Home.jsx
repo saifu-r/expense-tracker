@@ -97,6 +97,19 @@ export default function Home() {
           <Link to="/history" className="text-violet-400 text-sm">See all</Link>
         </div>
 
+        {/* Receipt thumbnail */}
+        {recent.receipts?.length > 0 && (
+          <div className="mt-2 flex gap-2">
+            {t.receipts.map(r => (
+              <a key={r.id} href={r.url} target="_blank" rel="noreferrer"
+                className="flex items-center gap-1.5 bg-violet-500/10 border border-violet-500/20 rounded-xl px-3 py-1.5 text-xs text-violet-400 active:scale-95 transition-transform">
+                <span>{r.mime_type === 'application/pdf' ? '📄' : '🖼️'}</span>
+                <span className="truncate max-w-[100px]">{r.file_name}</span>
+              </a>
+            ))}
+          </div>
+        )}
+
         {recent.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
             <p className="text-3xl mb-2">🪙</p>
