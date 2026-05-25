@@ -91,7 +91,7 @@ export default function AddTransaction() {
     }
 
     // Step 3 — Always navigate after transaction is saved
-    showToast("Transaction saved!");
+    showToast("Transaction saved!!", "success");
     navigate("/");
   }
 
