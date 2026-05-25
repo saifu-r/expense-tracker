@@ -9,7 +9,7 @@ import {
 const API_URL = import.meta.env.VITE_API_URL;
 
 // const { transactions, filter } = state;
-
+// console.log("Transactions:", transactions);
 function expenseReducer(state, action) {
   switch (action.type) {
     case "SET_ALL":
