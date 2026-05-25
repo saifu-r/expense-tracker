@@ -8,6 +8,8 @@ import {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// const { transactions, filter } = state;
+
 function expenseReducer(state, action) {
   switch (action.type) {
     case "SET_ALL":
@@ -136,6 +138,10 @@ export function ExpenseProvider({ children }) {
     return monthMatch && catMatch;
   });
 
+  const recent = [...transactions]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
+
   const totalIncome = filtered
     .filter((t) => t.type === "income")
     .reduce((s, t) => s + Number(t.amount), 0);
@@ -149,6 +155,7 @@ export function ExpenseProvider({ children }) {
       value={{
         transactions: filtered,
         allTransactions: transactions,
+        recent, // ← is this line there?
         filter,
         totalIncome,
         totalExpense,

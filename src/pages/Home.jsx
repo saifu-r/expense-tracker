@@ -10,9 +10,9 @@ export default function Home() {
   const { balance, totalIncome, totalExpense, recent, deleteTransaction } = useExpenses();
   const { user } = useAuth();
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const [confirmId, setConfirmId] = useState(null);
 
-  // Haptic feedback helper
   function haptic() {
     if (navigator.vibrate) navigator.vibrate(40);
   }
@@ -28,7 +28,6 @@ export default function Home() {
     setConfirmId(null);
   }
 
-  // Greeting based on time
   function getGreeting() {
     const h = new Date().getHours();
     if (h < 12) return 'Good morning';
@@ -43,8 +42,10 @@ export default function Home() {
       {/* Header */}
       <div className="pt-3 flex items-center justify-between">
         <div>
-          <p className="text-gray-400 text-sm">{getGreeting()}</p>
-          <h1 className="text-2xl font-display font-bold text-white">{firstName}'s Finances</h1>
+          <p className="text-gray-400 text-sm">{getGreeting()} 👋</p>
+          <h1 className="text-2xl font-display font-bold text-white">
+            {firstName}'s Finances
+          </h1>
         </div>
         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center font-display font-bold text-white shadow-lg shadow-violet-500/30">
           {firstName[0].toUpperCase()}
@@ -97,19 +98,6 @@ export default function Home() {
           <Link to="/history" className="text-violet-400 text-sm">See all</Link>
         </div>
 
-        {/* Receipt thumbnail */}
-        {recent.receipts?.length > 0 && (
-          <div className="mt-2 flex gap-2">
-            {t.receipts.map(r => (
-              <a key={r.id} href={r.url} target="_blank" rel="noreferrer"
-                className="flex items-center gap-1.5 bg-violet-500/10 border border-violet-500/20 rounded-xl px-3 py-1.5 text-xs text-violet-400 active:scale-95 transition-transform">
-                <span>{r.mime_type === 'application/pdf' ? '📄' : '🖼️'}</span>
-                <span className="truncate max-w-[100px]">{r.file_name}</span>
-              </a>
-            ))}
-          </div>
-        )}
-
         {recent.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
             <p className="text-3xl mb-2">🪙</p>
@@ -119,8 +107,12 @@ export default function Home() {
         ) : (
           <div className="flex flex-col gap-2">
             {recent.map(t => (
-              <TransactionCard key={t.id} transaction={t}
-                onDelete={() => { haptic(); setConfirmId(t.id); }} />
+              <TransactionCard
+                key={t.id}
+                transaction={t}
+                onDelete={() => { haptic(); setConfirmId(t.id); }}
+                onEdit={() => navigate(`/edit/${t.id}`)}
+              />
             ))}
           </div>
         )}
@@ -141,7 +133,6 @@ export default function Home() {
 export function TransactionCard({ transaction: t, onDelete, onEdit }) {
   const cat = CATEGORIES[t.category] || CATEGORIES.other;
   const isExpense = t.type === 'expense';
-  const navigate = useNavigate();
 
   // Swipe to delete
   const startX = useRef(null);
@@ -177,7 +168,7 @@ export function TransactionCard({ transaction: t, onDelete, onEdit }) {
 
       {/* Card */}
       <div
-        className="flex items-center gap-3 bg-[#18181f] rounded-2xl p-3 border border-white/5 relative"
+        className="flex flex-col bg-[#18181f] rounded-2xl p-3 border border-white/5 relative"
         style={{
           transform: `translateX(${swipeX}px)`,
           transition: swiping ? 'none' : 'transform 0.3s ease',
@@ -186,36 +177,52 @@ export function TransactionCard({ transaction: t, onDelete, onEdit }) {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        {/* Category icon */}
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-          style={{ backgroundColor: cat.color + '22' }}>
-          {cat.icon}
+        {/* Main row — icon, title, amount */}
+        <div className="flex items-center gap-3">
+          {/* Category icon */}
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+            style={{ backgroundColor: cat.color + '22' }}>
+            {cat.icon}
+          </div>
+
+          {/* Title + date */}
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-sm text-white truncate">{t.title}</p>
+            <p className="text-gray-500 text-xs">{formatDate(t.date)}</p>
+          </div>
+
+          {/* Amount + actions */}
+          <div className="flex items-center gap-2">
+            <span className={`font-display font-bold text-sm ${isExpense ? 'text-red-400' : 'text-green-400'}`}>
+              {isExpense ? '−' : '+'}{formatCurrency(t.amount)}
+            </span>
+            {onEdit && (
+              <button onClick={onEdit}
+                className="text-gray-600 hover:text-violet-400 transition-colors p-1 active:scale-90">
+                <EditIcon />
+              </button>
+            )}
+            {onDelete && (
+              <button onClick={onDelete}
+                className="text-gray-600 hover:text-red-400 transition-colors p-1 active:scale-90">
+                <TrashIcon />
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Title + date */}
-        <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm text-white truncate">{t.title}</p>
-          <p className="text-gray-500 text-xs">{formatDate(t.date)}</p>
-        </div>
-
-        {/* Amount + actions */}
-        <div className="flex items-center gap-2">
-          <span className={`font-display font-bold text-sm ${isExpense ? 'text-red-400' : 'text-green-400'}`}>
-            {isExpense ? '−' : '+'}{formatCurrency(t.amount)}
-          </span>
-          {onEdit && (
-            <button onClick={() => navigate(`/edit/${t.id}`)}
-              className="text-gray-600 hover:text-violet-400 transition-colors p-1 active:scale-90">
-              <EditIcon />
-            </button>
-          )}
-          {onDelete && (
-            <button onClick={onDelete}
-              className="text-gray-600 hover:text-red-400 transition-colors p-1 active:scale-90">
-              <TrashIcon />
-            </button>
-          )}
-        </div>
+        {/* Receipt thumbnails */}
+        {t.receipts?.length > 0 && (
+          <div className="mt-2 flex gap-2 flex-wrap">
+            {t.receipts.map(r => (
+              <a key={r.id} href={r.url} target="_blank" rel="noreferrer"
+                className="flex items-center gap-1.5 bg-violet-500/10 border border-violet-500/20 rounded-xl px-3 py-1.5 text-xs text-violet-400 active:scale-95 transition-transform">
+                <span>{r.mime_type === 'application/pdf' ? '📄' : '🖼️'}</span>
+                <span className="truncate max-w-[100px]">{r.file_name}</span>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
