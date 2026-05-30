@@ -230,7 +230,7 @@ export default function EditTransaction() {
       {/* Existing receipts */}
         {existingReceipts.length > 0 && (
           <div>
-            <label className="text-xs text-gray-400 mb-1.5 block">Attached Photos</label>
+            <label className="text-xs text-gray-400 mb-1.5 block">Attached Photos Here</label>
             <div className="flex flex-col gap-2">
               {existingReceipts.map(r => (
                 <div key={r.id} className="flex items-center justify-between bg-[#18181f] rounded-2xl p-3 border border-white/5">
