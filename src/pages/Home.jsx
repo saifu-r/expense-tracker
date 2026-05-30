@@ -215,7 +215,7 @@ export function TransactionCard({ transaction: t, onDelete, onEdit }) {
         {t.receipts?.length > 0 && (
           <div className="mt-2 flex gap-2 flex-wrap">
             {t.receipts.map(r => (
-              <a key={r.id} href={r.url} target="_blank" rel="noreferrer"
+              <a key={r.id} href={r.url} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
                 className="flex items-center gap-1.5 bg-violet-500/10 border border-violet-500/20 rounded-xl px-3 py-1.5 text-xs text-violet-400 active:scale-95 transition-transform">
                 <span>{r.mime_type === 'application/pdf' ? '📄' : '🖼️'}</span>
                 <span className="truncate max-w-[100px]">{r.file_name}</span>
