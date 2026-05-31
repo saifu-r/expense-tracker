@@ -19,6 +19,14 @@ function expenseReducer(state, action) {
         ...state,
         transactions: [action.payload, ...state.transactions],
       };
+
+    case "UPDATE": 
+      return {
+        ...state,
+        transactions: state.transactions.map((t) =>
+          t.id === action.payload.id ? action.payload : t,
+        ),
+      };
     case "DELETE":
       return {
         ...state,
@@ -125,6 +133,17 @@ export function ExpenseProvider({ children }) {
     }
   }
 
+  async function updateTransaction(data) {
+    const res = await fetch(`${API_URL}/transactions/${data.id}`, {
+      method: "PUT",
+      headers: authHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to update");
+    const updated = await res.json();
+    dispatch({ type: "UPDATE", payload: updated });
+  }
+
   function setFilter(filterData) {
     dispatch({ type: "SET_FILTER", payload: filterData });
   }
@@ -163,6 +182,7 @@ export function ExpenseProvider({ children }) {
         loading,
         error,
         addTransaction,
+        updateTransaction,
         deleteTransaction,
         reloadTransactions,
         setFilter,
