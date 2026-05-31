@@ -20,7 +20,7 @@ function expenseReducer(state, action) {
         transactions: [action.payload, ...state.transactions],
       };
 
-    case "UPDATE": 
+    case "UPDATE":
       return {
         ...state,
         transactions: state.transactions.map((t) =>
@@ -41,7 +41,7 @@ function expenseReducer(state, action) {
 
 const initialState = {
   transactions: [],
-  filter: { month: "", category: "" },
+  filter: { month: "", category: "", sort: "date_desc" },
 };
 
 const ExpenseContext = createContext(null);
@@ -151,11 +151,38 @@ export function ExpenseProvider({ children }) {
   // ── Derived values ──
   const { transactions, filter } = state;
 
-  const filtered = transactions.filter((t) => {
-    const monthMatch = filter.month ? t.date.startsWith(filter.month) : true;
-    const catMatch = filter.category ? t.category === filter.category : true;
-    return monthMatch && catMatch;
-  });
+  // const filtered = transactions.filter((t) => {
+  //   const monthMatch = filter.month ? t.date.startsWith(filter.month) : true;
+  //   const catMatch = filter.category ? t.category === filter.category : true;
+  //   return monthMatch && catMatch;
+  // });
+
+  const filtered = transactions
+    .filter((t) => {
+      const monthMatch = filter.month ? t.date.startsWith(filter.month) : true;
+      const catMatch = filter.category ? t.category === filter.category : true;
+      return monthMatch && catMatch;
+    })
+    .sort((a, b) => {
+      switch (filter.sort) {
+        case "date_asc":
+          return new Date(a.date) - new Date(b.date);
+        case "amount_desc":
+          return Number(b.amount) - Number(a.amount);
+        case "amount_asc":
+          return Number(a.amount) - Number(b.amount);
+        default:
+          return new Date(b.date) - new Date(a.date);
+      }
+    });
+
+  // ← Add this temporarily
+  console.log("filter.month:", filter.month);
+  console.log(
+    "transactions dates:",
+    transactions.map((t) => t.date),
+  );
+  console.log("filtered count:", filtered.length);
 
   const recent = [...transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
