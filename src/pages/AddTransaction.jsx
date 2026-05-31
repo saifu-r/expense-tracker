@@ -11,7 +11,7 @@ import {
 export default function AddTransaction() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { addTransaction } = useExpenses();
+  const { addTransaction, reloadTransactions } = useExpenses();
   const { showToast } = useToast();
 
   const [type, setType] = useState(searchParams.get("type") || "expense");
@@ -79,11 +79,13 @@ export default function AddTransaction() {
             body: formData,
           },
         );
+
         if (!res.ok) {
           const data = await res.json();
           console.error("Receipt error:", data);
           showToast("Transaction saved but receipt failed to upload", "error");
         }
+        await reloadTransactions(); // ← add this
       } catch (err) {
         console.error("Receipt upload error:", err);
         showToast("Transaction saved but receipt failed to upload", "error");

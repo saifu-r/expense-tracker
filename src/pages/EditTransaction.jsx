@@ -11,7 +11,8 @@ import {
 export default function EditTransaction() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { allTransactions, updateTransaction } = useExpenses();
+  const { allTransactions, updateTransaction, reloadTransactions } =
+    useExpenses();
   const { showToast } = useToast();
 
   const transaction = allTransactions.find((t) => t.id === id);
@@ -87,6 +88,7 @@ export default function EditTransaction() {
         },
       );
       setExistingReceipts((prev) => prev.filter((r) => r.id !== receiptId));
+      await reloadTransactions();
       showToast("Photo deleted");
     } catch {
       showToast("Failed to delete photo", "error");
@@ -112,7 +114,7 @@ export default function EditTransaction() {
         note: form.note,
       });
     } catch (err) {
-      console.error('Update error:', err);  // ← add this
+      console.error("Update error:", err); // ← add this
       setError("Failed to update. Try again.");
       setLoading(false);
       return;
@@ -134,6 +136,8 @@ export default function EditTransaction() {
             body: formData,
           },
         );
+
+        await reloadTransactions();
       } catch {
         showToast("Transaction updated but photo failed to upload", "error");
       }
