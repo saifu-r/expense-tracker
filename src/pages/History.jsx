@@ -83,7 +83,7 @@ export default function History() {
           {months.map(m => (
             <Chip key={m.value} active={filter.month === m.value}
               onClick={() => {
-                console.log('Setting month to:', m.value);
+                // console.log('Setting month to:', m.value);
                 setFilter({ month: m.value });
               }} label={m.label} />
           ))}

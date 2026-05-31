@@ -177,12 +177,12 @@ export function ExpenseProvider({ children }) {
     });
 
   // ← Add this temporarily
-  console.log("filter.month:", filter.month);
-  console.log(
-    "transactions dates:",
-    transactions.map((t) => t.date),
-  );
-  console.log("filtered count:", filtered.length);
+  // console.log("filter.month:", filter.month);
+  // console.log(
+  //   "transactions dates:",
+  //   transactions.map((t) => t.date),
+  // );
+  // console.log("filtered count:", filtered.length);
 
   const recent = [...transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
