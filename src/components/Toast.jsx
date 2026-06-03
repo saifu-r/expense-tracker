@@ -18,7 +18,7 @@ export function ToastProvider({ children }) {
       {children}
       {/* Toast container */}
       <div className="fixed bottom-24 left-0 right-0 z-50 flex flex-col gap-2 px-4 pointer-events-none"
-        style={{ maxWidth: 480, margin: '0 auto',paddingBottom: '75px' }}>
+        style={{ maxWidth: 480, margin: '0 auto'}}>
         {toasts.map(t => (
           <div key={t.id}
             className={`flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg text-sm font-medium animate-fade-in ${
