@@ -201,7 +201,7 @@ export function ExpenseProvider({ children }) {
       value={{
         transactions: filtered,
         allTransactions: transactions,
-        recent, // ← is this line there?
+        recent,
         filter,
         totalIncome,
         totalExpense,

@@ -11,6 +11,7 @@ import Charts from './pages/Charts';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AuthCallback from './pages/AuthCallback';
 
 function ProtectedLayout() {
   const { isLoggedIn } = useAuth();
@@ -40,6 +41,7 @@ export default function App() {
             <Route element={<PublicLayout />}>
               <Route path="/login"    element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
             </Route>
             <Route element={<ProtectedLayout />}>
               <Route path="/"              element={<Home />} />
