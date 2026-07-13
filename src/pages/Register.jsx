@@ -104,11 +104,19 @@ export default function Register() {
         </button>
       </div>
 
+
+      {/* Divider */}
+      <div className="flex items-center gap-3 my-4">
+        <div className="flex-1 h-px bg-gray-300 dark:bg-gray-600" />
+        <span className="text-sm text-gray-500">or</span>
+        <div className="flex-1 h-px bg-gray-300 dark:bg-gray-600" />
+      </div>
+      
       {/* Google Sign-In Button */}
       <a
         // href="https://et.rimlobd.com/api/auth/google/redirect"
-        // href="http://127.0.0.1:8000/api/auth/google/redirect"
-        href={`${API_URL}/auth/google/redirect`}
+        href="http://127.0.0.1:8000/api/auth/google/redirect"
+        // href={`${API_URL}/auth/google/redirect`}
         className="flex items-center justify-center gap-2 w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
