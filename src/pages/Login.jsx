@@ -95,7 +95,7 @@ export default function Login() {
 
       {/* Google Sign-In Button */}
       <a
-        // href="https://et.rimlobd.com/api/auth/google/redirect"
+        href="https://et.rimlobd.com/api/auth/google/redirect"
         // href="`${API_URL}/auth/google/redirect`"
         href={`${API_URL}/auth/google/redirect`}
         href="http://127.0.0.1:8000/api/auth/google/redirect"
